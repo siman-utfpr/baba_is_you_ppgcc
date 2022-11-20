@@ -1,23 +1,42 @@
 extends Node2D
 
 enum {
-	EMPTY,	# 0 - Empty Cell
-	BOB,	# 1 - Bob Cell
-	FLAG,	# 2 - Flag Cell
-	ROCK,	# 3 - Rock Cell
-	WALL,	# 4 - Wall Cell
-	BOB_C,	# 5 - Bob Command Cell
-	IS_C,	# 6 - Is Command Cell
-	YOU_C,	# 7 - You Command Cell
-	WALL_C,	# 8 - Wall Command Cell
-	STOP_C,	# 9 - Stop Command Cell
-	ROCK_C,	# 10 - Rock Command Cell
-	PUSH_C,	# 11 - Push Command Cell
-	FLAG_C,	# 12 - Flag Command Cell
-	WIN_C	# 13 - Win Command Cell
+	EMPTY,		# 0 - Empty Cell
+	BOB,		# 1 - Bob Cell
+	FLAG,		# 2 - Flag Cell
+	ROCK,		# 3 - Rock Cell
+	WALL,		# 4 - Wall Cell
+	BOB_C,		# 5 - Bob Command Cell
+	IS_C,		# 6 - Is Command Cell
+	YOU_C,		# 7 - You Command Cell
+	WALL_C,		# 8 - Wall Command Cell
+	STOP_C,		# 9 - Stop Command Cell
+	ROCK_C,		# 10 - Rock Command Cell
+	PUSH_C,		# 11 - Push Command Cell
+	FLAG_C,		# 12 - Flag Command Cell
+	WIN_C		# 13 - Win Command Cell
 }
 
-var resource_texture = {
+var COMMANDS = [
+	BOB_C,
+	WALL_C,
+	FLAG_C,
+	ROCK_C,
+	IS_C,
+	YOU_C,
+	STOP_C,
+	PUSH_C,
+	WIN_C 
+]
+
+var OBJECTS = [
+	BOB,
+	FLAG,
+	ROCK,
+	WALL
+]
+
+var RESOURCE_TEXTURE = {
 	BOB: preload("res://sprites/1.png"),
 	FLAG: preload("res://sprites/2.png"),
 	ROCK: preload("res://sprites/3.png"),
@@ -33,32 +52,71 @@ var resource_texture = {
 	WIN_C: preload("res://sprites/13.png"),
 }
 
-var current_level = 1
-
-onready var gameResolution = [get_viewport().size.x, get_viewport().size.y]
-
-var LEVEL1_POS = {
-	BOB: [[8], [8]],
-	FLAG: [[24], [8]],
-	ROCK: [array_filled(5, 16), range(6, 11, 1)],
-	WALL: [append_arrays(range(13, 20, 1), range(13, 20, 1)) , append_arrays(array_filled(7, 11), array_filled(7, 5))],
-	#BOB_C: [[5, 5]],
-	#IS_C: [[6, 6]],
-	#YOU_C: [[7, 7]],
-	#WALL_C: [[8, 8]],
-	#STOP_C: [[9, 9]],
-	#ROCK_C: [[10, 10]],
-	#PUSH_C: [[11, 11]],
-	#FLAG_C: [[12, 12]],
-	#WIN_C: [[31, 15]]
+var OBJ_CORRELATION = {
+	BOB_C: BOB,
+	FLAG_C: FLAG,
+	ROCK_C: ROCK,
+	WALL_C: WALL
 }
 
-func array_filled(num, val):
-	var a = []
-	a.resize(num)
-	a.fill(val)
-	return a
+# you, push, stop, win
+var INSTANCE_STATES = {
+	YOU_C: EMPTY,
+	PUSH_C: EMPTY,
+	STOP_C: EMPTY,
+	WIN_C: EMPTY
+}
 
-func append_arrays(arr1, arr2):
-	arr1.append_array(arr2)
-	return arr1
+var LEVEL1_POS = [
+	
+	[WALL, [12, 5]],
+	[WALL, [13, 5]],
+	[WALL, [14, 5]],
+	[WALL, [15, 5]],
+	[WALL, [16, 5]],
+	[WALL, [17, 5]],
+	[WALL, [18, 5]],
+	[WALL, [19, 5]],
+	[WALL, [20, 5]],
+	
+	[WALL, [12, 11]],
+	[WALL, [13, 11]],
+	[WALL, [14, 11]],
+	[WALL, [15, 11]],
+	[WALL, [16, 11]],
+	[WALL, [17, 11]],
+	[WALL, [18, 11]],
+	[WALL, [19, 11]],
+	[WALL, [20, 11]],
+	
+	[ROCK, [16, 6]],
+	[ROCK, [16, 7]],
+	[ROCK, [16, 8]],
+	[ROCK, [16, 9]],
+	[ROCK, [16, 10]],
+	
+	[BOB, [8, 8]],
+	[FLAG, [24, 8]],
+	
+	[BOB_C, [12, 3]],
+	[IS_C, [13, 3]],
+	[YOU_C, [14, 3]],
+	
+	[WALL_C, [18, 3]],
+	[IS_C, [19, 3]],
+	[STOP_C, [20, 3]],
+	
+	[ROCK_C, [12, 13]],
+	[IS_C, [13, 13]],
+	[PUSH_C, [14, 13]],
+	
+	[FLAG_C, [18, 13]],
+	[IS_C, [19, 13]],
+	[WIN_C, [20, 13]],
+]
+
+var CURRENT_LEVEL = 1
+
+onready var GAMERESOLUTION = [get_viewport().size.x, get_viewport().size.y]
+
+var display_div = [32, 16]
