@@ -73,7 +73,7 @@ func can_move(instance, where):
 			if (instance[1] == Globals.INSTANCE_STATES[Globals.YOU_C]):
 				print("you win")
 				return true
-			canMove = []
+			if(move_instance(instColliding, where)): return true
 			return false
 		canMove = []
 		return true
