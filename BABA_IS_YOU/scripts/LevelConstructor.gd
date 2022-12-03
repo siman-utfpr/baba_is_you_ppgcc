@@ -8,7 +8,7 @@ onready var heightVec = range(0, Globals.GAMERESOLUTION[1], Globals.GAMERESOLUTI
 
 func _ready():
 	print("Game Resolution: ", Globals.GAMERESOLUTION)
-	instance_list = create_instances(Globals.LEVEL1_POS, 2)
+	instance_list = create_instances(Globals.LEVEL3_POS, 2)
 	update_states()
 	pass
 		
